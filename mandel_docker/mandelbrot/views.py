@@ -10,8 +10,8 @@ import base64
 def mandelbrot_view(request):
     # Define Mandelbrot parameters
     width, height = 1600, 1200
-    x = np.linspace(-2, 1, width)
-    y = np.linspace(-1.5, 1.5, height)
+    x = np.linspace(-2, 0, width)
+    y = np.linspace(0, 1.5, height)
     X, Y = np.meshgrid(x, y)
     C = X + 1j * Y
     Z = np.zeros_like(C, dtype=complex)
