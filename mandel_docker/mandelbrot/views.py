@@ -9,7 +9,7 @@ import base64
 # Create your views here.
 def mandelbrot_view(request):
     # Define Mandelbrot parameters
-    width, height = 800, 600
+    width, height = 1600, 1200
     x = np.linspace(-2, 1, width)
     y = np.linspace(-1.5, 1.5, height)
     X, Y = np.meshgrid(x, y)
