@@ -21,13 +21,23 @@ ssh -i "$KEY_PATH" ubuntu@$EC2_IP << EOF
 
     # Stop and remove any running container
     echo "Stopping and removing existing containers..."
-    docker ps -q --filter ancestor=$IMAGE_NAME | xargs -r docker stop
-    docker ps -aq --filter ancestor=$IMAGE_NAME | xargs -r docker rm
+    RUNNING_CONTAINERS=$(docker ps -q --filter ancestor=$IMAGE_NAME)
+    if [ -n "$RUNNING_CONTAINERS" ]; then
+        echo "Stopping containers: $RUNNING_CONTAINERS"
+        docker stop $RUNNING_CONTAINERS
+    fi
+
+    # Remove all containers (running or stopped) with this image
+    ALL_CONTAINERS=$(docker ps -aq --filter ancestor=$IMAGE_NAME)
+    if [ -n "$ALL_CONTAINERS" ]; then
+        echo "Removing containers: $ALL_CONTAINERS"
+        docker rm -f $ALL_CONTAINERS
+    fi
 
     # Check if port 8000 is still in use
-    if lsof -i :8000; then
+    if sudo lsof -i :8000 > /dev/null 2>&1; then
         echo "Port 8000 is in use, attempting to free it..."
-        sudo lsof -i :8000 awk 'NR>1 {print $2}' | xargs -r sudo kill -9
+        sudo lsof -i :8000 | awk 'NR>1 {print $2}' | xargs -r sudo kill -9
     fi
 
     # Run new container
