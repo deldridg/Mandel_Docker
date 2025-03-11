@@ -32,11 +32,6 @@ def mandelbrot_view(request):
     buffer.close()
     encoded_image = base64.b64encode(image_png).decode('utf-8')
 
-    # Return as HTML with embedded image
-    # html = f'<img src="data:image/png;base64,{encoded_image}" alt="Mandelbrot Set">'
-
-    # return HttpResponse(html)
-
     context = {
         'encoded_image': encoded_image
     }
